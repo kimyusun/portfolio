@@ -1,0 +1,68 @@
+[
+  {
+    "name": "log-negative-park-scrap",
+    "description": "불안 상태에서 공원 추천을 클릭하고 스크랩한 로그 예시입니다.",
+    "requestId": "log-negative-001",
+    "userId": 12,
+    "createdAt": "2026-05-27T10:20:00+09:00",
+    "shownPlaceIds": [501, 630, 610],
+    "clickedPlaceIds": [501],
+    "detailViewedPlaceIds": [501, 630],
+    "scrappedPlaceIds": [501],
+    "memoCreatedPlaceIds": [],
+    "request": {
+      "requestId": "log-negative-001",
+      "userId": 12,
+      "top": 3,
+      "debug": true,
+      "candidates": [
+        {"placeId": 610, "name": "익숙한 카페", "category": "카페", "latitude": 37.5501, "longitude": 127.14},
+        {"placeId": 501, "name": "햇빛 공원", "category": "공원", "latitude": 37.5663, "longitude": 126.9779},
+        {"placeId": 630, "name": "전시 미술관", "category": "미술관", "latitude": 37.579, "longitude": 126.98}
+      ],
+      "context": {
+        "recentEmotion": {"label": "불안", "score": 0.92},
+        "favCategories": {"카페": 8, "공원": 2, "미술관": 1},
+        "scrapPlaceIds": [],
+        "placeSignals": [
+          {"placeId": 610, "posRatio": 0.25, "followedPositiveCount": 0},
+          {"placeId": 501, "posRatio": 0.96, "followedPositiveCount": 1},
+          {"placeId": 630, "posRatio": 0.70, "followedPositiveCount": 0}
+        ]
+      }
+    }
+  },
+  {
+    "name": "log-joy-cafe-memo",
+    "description": "기쁨 상태에서 저장한 카페를 클릭하고 메모까지 작성한 로그 예시입니다.",
+    "requestId": "log-joy-001",
+    "userId": 12,
+    "createdAt": "2026-05-27T12:05:00+09:00",
+    "shownPlaceIds": [610, 501, 630],
+    "clickedPlaceIds": [610],
+    "detailViewedPlaceIds": [610],
+    "scrappedPlaceIds": [],
+    "memoCreatedPlaceIds": [610],
+    "request": {
+      "requestId": "log-joy-001",
+      "userId": 12,
+      "top": 3,
+      "debug": true,
+      "candidates": [
+        {"placeId": 610, "name": "저장한 카페", "category": "카페", "latitude": 37.5501, "longitude": 127.14},
+        {"placeId": 501, "name": "햇빛 공원", "category": "공원", "latitude": 37.5663, "longitude": 126.9779},
+        {"placeId": 630, "name": "전시 미술관", "category": "미술관", "latitude": 37.579, "longitude": 126.98}
+      ],
+      "context": {
+        "recentEmotion": {"label": "기쁨", "score": 0.88},
+        "favCategories": {"카페": 8, "공원": 2, "미술관": 1},
+        "scrapPlaceIds": [610],
+        "placeSignals": [
+          {"placeId": 610, "posRatio": 0.75, "followedPositiveCount": 1},
+          {"placeId": 501, "posRatio": 0.82, "followedPositiveCount": 0},
+          {"placeId": 630, "posRatio": 0.78, "followedPositiveCount": 0}
+        ]
+      }
+    }
+  }
+]

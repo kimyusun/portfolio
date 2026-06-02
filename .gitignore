@@ -1,0 +1,28 @@
+﻿# Secrets
+.env
+.env.*
+!.env.sample
+*credential*
+*credentials*
+*secret*
+*service_account*
+*service-account*
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Local outputs
+reports/
+logs/
+*.log
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

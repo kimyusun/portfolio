@@ -1,0 +1,59 @@
+{
+  "requestId": "req-backend-001",
+  "userId": 12,
+  "top": 5,
+  "debug": true,
+  "candidates": [
+    {
+      "placeId": 610,
+      "name": "조용한 카페",
+      "category": "카페",
+      "latitude": 37.5501,
+      "longitude": 127.14
+    },
+    {
+      "placeId": 501,
+      "name": "시청공원",
+      "category": "공원",
+      "latitude": 37.5663,
+      "longitude": 126.9779
+    },
+    {
+      "placeId": 630,
+      "name": "서림미술관",
+      "category": "미술관",
+      "latitude": 37.579,
+      "longitude": 126.98
+    }
+  ],
+  "context": {
+    "recentEmotion": {
+      "label": "불안",
+      "score": 0.92
+    },
+    "favCategories": {
+      "카페": 6,
+      "공원": 5,
+      "미술관": 2
+    },
+    "scrapPlaceIds": [610],
+    "followedUserIds": [23, 45, 78],
+    "placeSignals": [
+      {
+        "placeId": 610,
+        "posRatio": 0.91,
+        "followedPositiveCount": 3
+      },
+      {
+        "placeId": 501,
+        "posRatio": 0.83,
+        "followedPositiveCount": 0
+      },
+      {
+        "placeId": 630,
+        "posRatio": 0.79,
+        "followedPositiveCount": 1
+      }
+    ]
+  }
+}

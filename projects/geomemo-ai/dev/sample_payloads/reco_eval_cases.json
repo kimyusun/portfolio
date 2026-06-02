@@ -1,0 +1,92 @@
+[
+  {
+    "name": "negative_emotion_clicks_positive_park",
+    "description": "불안한 사용자가 긍정 기록이 많은 공원 후보를 클릭했다고 가정한 평가 케이스입니다.",
+    "relevantPlaceIds": [501],
+    "gradedRelevance": {
+      "501": 2,
+      "630": 1
+    },
+    "request": {
+      "requestId": "eval-negative-001",
+      "userId": 12,
+      "top": 3,
+      "debug": true,
+      "candidates": [
+        {"placeId": 610, "name": "익숙한 카페", "category": "카페", "latitude": 37.5501, "longitude": 127.14},
+        {"placeId": 501, "name": "햇빛 공원", "category": "공원", "latitude": 37.5663, "longitude": 126.9779},
+        {"placeId": 630, "name": "전시 미술관", "category": "미술관", "latitude": 37.579, "longitude": 126.98}
+      ],
+      "context": {
+        "recentEmotion": {"label": "불안", "score": 0.92},
+        "favCategories": {"카페": 8, "공원": 2, "미술관": 1},
+        "scrapPlaceIds": [],
+        "placeSignals": [
+          {"placeId": 610, "posRatio": 0.25, "followedPositiveCount": 0},
+          {"placeId": 501, "posRatio": 0.96, "followedPositiveCount": 1},
+          {"placeId": 630, "posRatio": 0.70, "followedPositiveCount": 0}
+        ]
+      }
+    }
+  },
+  {
+    "name": "joy_clicks_saved_cafe",
+    "description": "기쁜 사용자가 선호 카테고리이면서 스크랩한 카페를 선택했다고 가정한 평가 케이스입니다.",
+    "relevantPlaceIds": [610],
+    "gradedRelevance": {
+      "610": 2,
+      "501": 1
+    },
+    "request": {
+      "requestId": "eval-joy-001",
+      "userId": 12,
+      "top": 3,
+      "debug": true,
+      "candidates": [
+        {"placeId": 610, "name": "저장한 카페", "category": "카페", "latitude": 37.5501, "longitude": 127.14},
+        {"placeId": 501, "name": "햇빛 공원", "category": "공원", "latitude": 37.5663, "longitude": 126.9779},
+        {"placeId": 630, "name": "전시 미술관", "category": "미술관", "latitude": 37.579, "longitude": 126.98}
+      ],
+      "context": {
+        "recentEmotion": {"label": "기쁨", "score": 0.88},
+        "favCategories": {"카페": 8, "공원": 2, "미술관": 1},
+        "scrapPlaceIds": [610],
+        "placeSignals": [
+          {"placeId": 610, "posRatio": 0.75, "followedPositiveCount": 1},
+          {"placeId": 501, "posRatio": 0.82, "followedPositiveCount": 0},
+          {"placeId": 630, "posRatio": 0.78, "followedPositiveCount": 0}
+        ]
+      }
+    }
+  },
+  {
+    "name": "surprise_clicks_familiar_cafe",
+    "description": "놀람은 약한 긍정으로 보고, 사용자가 익숙한 카페를 선택했다고 가정한 평가 케이스입니다.",
+    "relevantPlaceIds": [610],
+    "gradedRelevance": {
+      "610": 2,
+      "501": 1
+    },
+    "request": {
+      "requestId": "eval-surprise-001",
+      "userId": 12,
+      "top": 3,
+      "debug": true,
+      "candidates": [
+        {"placeId": 610, "name": "익숙한 카페", "category": "카페", "latitude": 37.5501, "longitude": 127.14},
+        {"placeId": 501, "name": "햇빛 공원", "category": "공원", "latitude": 37.5663, "longitude": 126.9779},
+        {"placeId": 630, "name": "전시 미술관", "category": "미술관", "latitude": 37.579, "longitude": 126.98}
+      ],
+      "context": {
+        "recentEmotion": {"label": "놀람", "score": 0.90},
+        "favCategories": {"카페": 8, "공원": 2, "미술관": 1},
+        "scrapPlaceIds": [],
+        "placeSignals": [
+          {"placeId": 610, "posRatio": 0.70, "followedPositiveCount": 0},
+          {"placeId": 501, "posRatio": 0.68, "followedPositiveCount": 0},
+          {"placeId": 630, "posRatio": 0.66, "followedPositiveCount": 0}
+        ]
+      }
+    }
+  }
+]

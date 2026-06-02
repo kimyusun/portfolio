@@ -1,0 +1,171 @@
+from __future__ import annotations
+
+import asyncio
+import json
+import logging
+import os
+import time
+import traceback
+from typing import Any, Dict, Optional
+
+import aio_pika
+from aio_pika import DeliveryMode, IncomingMessage
+from aio_pika.exceptions import DeliveryError
+from aiormq.exceptions import ChannelPreconditionFailed
+
+from ai.infra.mq_common import RES_QUEUE, connect_channel, declare_queues
+from ai.recommender.recommender import recommend_top_n
+from ai.recommender.request_parser import parse_request
+
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
+logging.basicConfig(
+    level=getattr(logging, LOG_LEVEL, logging.INFO),
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+)
+log = logging.getLogger("reco-worker")
+
+
+def to_jsonable(x):
+    """Convert Pydantic models and sets into JSON-serializable values."""
+    if x is None or isinstance(x, (str, int, float, bool)):
+        return x
+    if isinstance(x, dict):
+        return {k: to_jsonable(v) for k, v in x.items()}
+    if isinstance(x, (list, tuple, set)):
+        return [to_jsonable(i) for i in x]
+    for attr in ("model_dump", "dict"):
+        if hasattr(x, attr):
+            try:
+                return to_jsonable(getattr(x, attr)())
+            except Exception:
+                pass
+    if hasattr(x, "__dict__"):
+        try:
+            return to_jsonable(vars(x))
+        except Exception:
+            pass
+    return str(x)
+
+
+async def on_message(msg: IncomingMessage, ch: aio_pika.Channel):
+    started = time.time()
+    payload: Dict[str, Any] = {}
+    res: Dict[str, Any] = {}
+    target_queue = msg.reply_to or os.getenv("RECO_RES_QUEUE", RES_QUEUE)
+
+    log.info(
+        "[recv] corr='%s', reply_to='%s', bytes=%s",
+        msg.correlation_id,
+        msg.reply_to,
+        len(msg.body) if msg.body else 0,
+    )
+
+    try:
+        payload = json.loads(msg.body)
+        req_id = payload.get("requestId") or msg.correlation_id
+
+        parsed = parse_request(payload)
+        log.info(
+            "[parse] userId=%s, cand=%s, top=%s, debug=%s, recent_idx=%s, recent_score=%s",
+            parsed["user_id"],
+            parsed["cand_count"],
+            parsed["top"],
+            parsed["debug"],
+            parsed["recent_idx"],
+            parsed["recent_score"],
+        )
+
+        items = recommend_top_n(
+            user_id=parsed["user_id"],
+            candidate_places=parsed["candidates"],
+            recent_emotion_idx=parsed["recent_idx"],
+            recent_emotion_score=parsed["recent_score"],
+            fav_categories=parsed["fav_categories"],
+            scrap_place_ids=parsed["scrap_place_ids"],
+            place_positive_ratio=parsed["pos_ratio"],
+            followed_positive_count=parsed["followed_pos_count"],
+            top_n=parsed["top"],
+            debug=parsed["debug"],
+            recent_emotion_reliable=parsed["recent_reliable"],
+        )
+
+        res = {
+            "requestId": req_id,
+            "userId": parsed["user_id"],
+            "status": "ok",
+            "items": to_jsonable(items),
+            "meta": {
+                "model": "reco-v1.1",
+                "elapsedMs": int((time.time() - started) * 1000),
+            },
+        }
+
+    except Exception as e:
+        log.error("[error] %s: %s", type(e).__name__, e)
+        log.debug(traceback.format_exc())
+        req_id = (payload.get("requestId") if isinstance(payload, dict) else None) or msg.correlation_id
+        res = {
+            "requestId": req_id,
+            "userId": payload.get("userId") if isinstance(payload, dict) else None,
+            "status": "error",
+            "error": f"{type(e).__name__}: {e}",
+            "meta": {"model": "reco-v1.1"},
+        }
+
+    try:
+        await publish_result(ch, res, target_queue, msg.correlation_id or res.get("requestId"))
+        await msg.ack()
+        log.info("[ack] corr='%s' done", msg.correlation_id)
+    except DeliveryError as de:
+        log.error("[publish-fail] queue='%s' corr='%s': %s. NACK requeue", target_queue, msg.correlation_id, de)
+        await msg.nack(requeue=True)
+    except Exception as e:
+        log.error("[publish-fail] unexpected: %s: %s. NACK requeue", type(e).__name__, e)
+        log.debug(traceback.format_exc())
+        await msg.nack(requeue=True)
+
+
+async def main():
+    conn, ch = await connect_channel()
+    req_q = await declare_queues(ch)
+
+    res_q_name_env = os.getenv("RECO_RES_QUEUE", RES_QUEUE)
+    skip_res_declare = os.getenv("RECO_SKIP_RES_DECLARE", "0") == "1"
+    if not skip_res_declare:
+        res_q_type = os.getenv("RECO_RES_QUEUE_TYPE", os.getenv("MQ_QUEUE_TYPE", "quorum")).strip().lower()
+        res_args = {"x-queue-type": res_q_type} if res_q_type else None
+        try:
+            await ch.declare_queue(res_q_name_env, durable=True, arguments=res_args)
+            log.info("[startup] resQueue declared name='%s' type='%s'", res_q_name_env, res_q_type)
+        except ChannelPreconditionFailed as e:
+            log.error(
+                "[startup] RES queue precondition failed: %s. Check queue type settings in code/ENV and broker.",
+                e,
+            )
+            raise
+    else:
+        log.info("[startup] skip declaring resQueue (RECO_SKIP_RES_DECLARE=1)")
+
+    try:
+        await ch.set_qos(prefetch_count=int(os.getenv("RECO_PREFETCH", "8")))
+    except Exception:
+        pass
+
+    log.info(
+        "[*] Recommender worker started. reqQueue='%s', resQueue='%s', queueType='%s', skipResDeclare=%s",
+        req_q.name,
+        res_q_name_env,
+        os.getenv("MQ_QUEUE_TYPE", "quorum"),
+        skip_res_declare,
+    )
+
+    await req_q.consume(lambda m: on_message(m, ch))
+
+    try:
+        await asyncio.Future()
+    finally:
+        await conn.close()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

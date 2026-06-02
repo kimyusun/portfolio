@@ -1,0 +1,80 @@
+[
+  {
+    "name": "negative_emotion_prefers_positive_place",
+    "description": "불안한 사용자는 선호 카테고리보다 장소의 긍정 비율이 높은 후보를 우선한다.",
+    "expectedTopPlaceId": 501,
+    "request": {
+      "requestId": "scenario-negative-001",
+      "userId": 12,
+      "top": 3,
+      "debug": true,
+      "candidates": [
+        {"placeId": 610, "name": "익숙한 카페", "category": "카페", "latitude": 37.5501, "longitude": 127.14},
+        {"placeId": 501, "name": "햇빛 공원", "category": "공원", "latitude": 37.5663, "longitude": 126.9779},
+        {"placeId": 630, "name": "전시 미술관", "category": "미술관", "latitude": 37.579, "longitude": 126.98}
+      ],
+      "context": {
+        "recentEmotion": {"label": "불안", "score": 0.92},
+        "favCategories": {"카페": 8, "공원": 2, "미술관": 1},
+        "scrapPlaceIds": [],
+        "placeSignals": [
+          {"placeId": 610, "posRatio": 0.25, "followedPositiveCount": 0},
+          {"placeId": 501, "posRatio": 0.96, "followedPositiveCount": 1},
+          {"placeId": 630, "posRatio": 0.70, "followedPositiveCount": 0}
+        ]
+      }
+    }
+  },
+  {
+    "name": "joy_keeps_preference_and_scrap_signal",
+    "description": "기쁜 사용자는 기존 선호 카테고리와 스크랩 신호가 강한 후보를 우선한다.",
+    "expectedTopPlaceId": 610,
+    "request": {
+      "requestId": "scenario-joy-001",
+      "userId": 12,
+      "top": 3,
+      "debug": true,
+      "candidates": [
+        {"placeId": 610, "name": "저장한 카페", "category": "카페", "latitude": 37.5501, "longitude": 127.14},
+        {"placeId": 501, "name": "햇빛 공원", "category": "공원", "latitude": 37.5663, "longitude": 126.9779},
+        {"placeId": 630, "name": "전시 미술관", "category": "미술관", "latitude": 37.579, "longitude": 126.98}
+      ],
+      "context": {
+        "recentEmotion": {"label": "기쁨", "score": 0.88},
+        "favCategories": {"카페": 8, "공원": 2, "미술관": 1},
+        "scrapPlaceIds": [610],
+        "placeSignals": [
+          {"placeId": 610, "posRatio": 0.75, "followedPositiveCount": 1},
+          {"placeId": 501, "posRatio": 0.82, "followedPositiveCount": 0},
+          {"placeId": 630, "posRatio": 0.78, "followedPositiveCount": 0}
+        ]
+      }
+    }
+  },
+  {
+    "name": "surprise_is_weaker_than_joy",
+    "description": "놀람은 긍정 그룹이지만 기쁨보다 약하게 반영되어 점수가 중립에 가깝다.",
+    "expectedTopPlaceId": 610,
+    "request": {
+      "requestId": "scenario-surprise-001",
+      "userId": 12,
+      "top": 3,
+      "debug": true,
+      "candidates": [
+        {"placeId": 610, "name": "익숙한 카페", "category": "카페", "latitude": 37.5501, "longitude": 127.14},
+        {"placeId": 501, "name": "햇빛 공원", "category": "공원", "latitude": 37.5663, "longitude": 126.9779},
+        {"placeId": 630, "name": "전시 미술관", "category": "미술관", "latitude": 37.579, "longitude": 126.98}
+      ],
+      "context": {
+        "recentEmotion": {"label": "놀람", "score": 0.90},
+        "favCategories": {"카페": 8, "공원": 2, "미술관": 1},
+        "scrapPlaceIds": [],
+        "placeSignals": [
+          {"placeId": 610, "posRatio": 0.70, "followedPositiveCount": 0},
+          {"placeId": 501, "posRatio": 0.68, "followedPositiveCount": 0},
+          {"placeId": 630, "posRatio": 0.66, "followedPositiveCount": 0}
+        ]
+      }
+    }
+  }
+]
