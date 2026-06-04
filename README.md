@@ -1,15 +1,26 @@
-﻿# 김유선 Portfolio
+# portfolio
 
-개발 프로젝트의 문제해결 과정, 구현 결과, 검증 기록을 정리하는 통합 포트폴리오 저장소입니다.
+개인 프로젝트를 한 곳에 모아두는 저장소입니다.
 
-## Projects
+각 프로젝트는 코드만 올리는 데서 끝내지 않고, 어떤 역할을 맡았는지와 어떤 부분을 검증했는지까지 함께 정리합니다.
+지금은 GeoMemo-AI를 먼저 올려두었고, 이후 다른 프로젝트들도 `projects/` 아래에 추가할 예정입니다.
 
-| Project | Summary | Focus |
-| --- | --- | --- |
-| [GeoMemo-AI](projects/geomemo-ai) | 위치 기반 메모 서비스의 AI worker 모듈 | 감정 분석, 장소 추천, 주간 인사이트, MQ 연동, 모델 검증 |
+## 프로젝트
 
-## Repository Policy
+| 프로젝트 | 설명 |
+| --- | --- |
+| [GeoMemo-AI](projects/geomemo-ai) | 위치 기반 메모 서비스에서 감정 분석, 장소 추천, 주간 인사이트를 담당한 AI worker 모듈 |
 
-- 실제 `.env`, credential, API key, DB password는 커밋하지 않습니다.
-- 원본 학습 데이터와 대용량 모델 파일은 로컬 또는 별도 저장소에서 관리합니다.
-- 각 프로젝트는 `projects/` 아래에 독립 폴더로 정리합니다.
+## 구조
+
+```text
+portfolio/
+  projects/
+    geomemo-ai/
+```
+
+## 공개 기준
+
+- 실제 `.env`, API key, DB password, credential은 올리지 않습니다.
+- 원본 데이터와 대용량 모델 파일은 GitHub에 포함하지 않습니다.
+- 공개 가능한 샘플 데이터, 테스트 코드, 기술 문서만 남깁니다.
